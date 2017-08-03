@@ -1,12 +1,16 @@
 #!/bin/bash
 
+#Variables
 RECIPIENTS="youremail@address.com,andonemore@newaddress.com"
 WORK_PATH="/home/yourusername/myhouses"
 URL="http://www.xe.gr/property/search?System.item_type=re_residence&Transaction.type_channel=117541&Transaction.price.from=300&Transaction.price.to=500&Item.area.from=40&Item.area.to=100&Geo.area_id_new__hierarchy=83268"
 
-mkdir -p "${WORK_PATH}/tmp"
+#cleanup
 rm -f ${WORK_PATH}/tmp/array.out
 rm -f ${WORK_PATH}/tmp/tomail
+rm -f ${WORK_PATH}/tmp/newout
+
+mkdir -p "${WORK_PATH}/tmp"
 
 curl "${URL}" | pup '[class="r_desc"] json{}' > ${WORK_PATH}/tmp/newout
 jq -r '[.[] as $house | [$house.children[0].children[0].href,$house.children[1].text]]' < ${WORK_PATH}/tmp/newout| \
@@ -37,7 +41,7 @@ while [ ${i} -lt ${ARRLEN} ]; do
 done
 
 
-if [ -f ${WORK_PATH}/tmp/tomail ]; then 
+if [ -f ${WORK_PATH}/tmp/tomail ]; then
 	cat ${WORK_PATH}/tmp/tomail | mailx -s "new houses" -r noreply@xe.gr ${RECIPIENTS}
 	grep http ${WORK_PATH}/tmp/tomail >> ${WORK_PATH}/mailed
 	rm -f ${WORK_PATH}/tmp/tomail
