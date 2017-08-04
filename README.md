@@ -34,4 +34,6 @@ Yeap! I got a great new house using this script ;)
 
 ## Similar work
 
-I've heard that people have written their own versions of this in php and python but I'm not aware of any public versions.
+~~I've heard that people have written their own versions of this in php and python but I'm not aware of any public versions.~~
+
+[xenotifier](https://github.com/jkakavas/xenotifier)
