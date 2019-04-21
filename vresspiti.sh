@@ -22,7 +22,7 @@ IFS=$'\r\n' GLOBIGNORE='*' command eval  'HOUSES=($(cat ${WORK_PATH}/tmp/array.o
 ARRLEN=${#HOUSES[@]}
 
 i=0
-while [ ${i} -lt ${ARRLEN} ]; do
+while [ "${i}" -lt "${ARRLEN}" ]; do
 	# get the links for the houses, string must contain http
 	echo "${HOUSES[$i]}" | grep -q "http"
 	if [ "$?" -eq "0" ]; then
@@ -37,12 +37,12 @@ while [ ${i} -lt ${ARRLEN} ]; do
 			fi
 		fi
 	fi
-	i=$(( $i + 1 ))
+	i=$(( i + 1 ))
 done
 
 
 if [ -f ${WORK_PATH}/tmp/tomail ]; then
-	cat ${WORK_PATH}/tmp/tomail | mailx -s "new houses" -r noreply@xe.gr ${RECIPIENTS}
+	mailx -s "new houses" -r noreply@xe.gr ${RECIPIENTS} < "${WORK_PATH}"/tmp/tomail
 	grep http ${WORK_PATH}/tmp/tomail >> ${WORK_PATH}/mailed
 	rm -f ${WORK_PATH}/tmp/tomail
 fi
