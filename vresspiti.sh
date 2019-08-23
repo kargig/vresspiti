@@ -4,6 +4,7 @@
 RECIPIENTS="youremail@address.com,andonemore@newaddress.com"
 WORK_PATH="/home/yourusername/myhouses"
 URL="http://www.xe.gr/property/search?System.item_type=re_residence&Transaction.type_channel=117541&Transaction.price.from=300&Transaction.price.to=500&Item.area.from=40&Item.area.to=100&Geo.area_id_new__hierarchy=83268"
+USER_AGENT="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0"
 
 #cleanup
 rm -f ${WORK_PATH}/tmp/array.out
@@ -12,7 +13,7 @@ rm -f ${WORK_PATH}/tmp/newout
 
 mkdir -p "${WORK_PATH}/tmp"
 
-curl "${URL}" | pup '[class="r_desc"] json{}' > ${WORK_PATH}/tmp/newout
+curl "${URL}" -H "${USER_AGENT}" | pup '[class="r_desc"] json{}' > ${WORK_PATH}/tmp/newout
 jq -r '[.[] as $house | [$house.children[0].children[0].href,$house.children[1].text]]' < ${WORK_PATH}/tmp/newout| \
 	sed -e 's/"//g' | sed -e 's/\(\/pro\)/https:\/\/www.xe.gr\1/g'         | \
 	sed -e 's/],*//g' -e 's/\[//g' -e '/^\s*$/d' -e 's/,$//g' -e 's/^\s*//g' \
