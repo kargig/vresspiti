@@ -13,11 +13,10 @@ rm -f ${WORK_PATH}/tmp/newout
 
 mkdir -p "${WORK_PATH}/tmp"
 
-curl "${URL}" -H "${USER_AGENT}" | pup '[class="r_desc"] json{}' > ${WORK_PATH}/tmp/newout
-jq -r '[.[] as $house | [$house.children[0].children[0].href,$house.children[1].text]]' < ${WORK_PATH}/tmp/newout| \
-	sed -e 's/"//g' | sed -e 's/\(\/pro\)/https:\/\/www.xe.gr\1/g'         | \
-	sed -e 's/],*//g' -e 's/\[//g' -e '/^\s*$/d' -e 's/,$//g' -e 's/^\s*//g' \
-	> ${WORK_PATH}/tmp/array.out
+curl -H "${USER_AGENT}" "${URL}" | $PUP '[class="resultItem   r  ad_full_view"] json{}' > ${NEWOUT}
+cat ${NEWOUT} | jq -r '[.[] as $house | [$house."href",$house.children[1].children[0].children[0].text+$house.children[1].children[1].children[0].text+$house.children[1].children[0].text]]' | \
+       sed -e 's/"//g' | sed -e 's/\(\/pro\)/https:\/\/www.xe.gr\1/g' | \
+       sed -e 's/],*//g' -e 's/\[//g' -e '/^\s*$/d' -e 's/,$//g' -e 's/^\s*//g'> ${WORK_PATH}/tmp/array.out
 
 IFS=$'\r\n' GLOBIGNORE='*' command eval  'HOUSES=($(cat ${WORK_PATH}/tmp/array.out))'
 ARRLEN=${#HOUSES[@]}
